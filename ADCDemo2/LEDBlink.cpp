@@ -74,7 +74,6 @@ void SystemClock_Config();
 
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef  hdma_adc1;
-#define DMA_WORKS
 
 static int ADC12_CLK_ENABLED = 0;
 
@@ -172,13 +171,22 @@ void ConfigureADC()
 	}
 }
 
+void MX_DMA_Init(void) 
+{
+  /* DMA controller clock enable */
+	__DMA1_CLK_ENABLE();
+
+	  /* DMA interrupt init */
+	HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+
+}
 
 void ConfigureDMA()
 {
 	__DMA1_CLK_ENABLE(); 
 	#ifdef DMA_WORKS
 		    /* Peripheral DMA init*/
-  
 		hdma_adc1.Instance = DMA1_Channel1;
 		hdma_adc1.Init.Direction = DMA_PERIPH_TO_MEMORY;
 		hdma_adc1.Init.PeriphInc = DMA_PINC_DISABLE;
@@ -229,21 +237,6 @@ volatile	int g_DmaOffsetBeforeAveragingH, g_DmaOffsetAfterAveragingH;
 		g_DmaOffsetAfterAveragingH = ADC_BUFFER_LENGTH - DMA1_Channel1->CNDTR;
 		g_MeasurementNumber += ADC_BUFFER_LENGTH;
 	}
-#if 0
-	void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle)
-	{
-#if DMA
-
-		dmaOffsetBeforeAveraging = ADC_BUFFER_LENGTH - DMA1_Channel1->CNDTR;
-		g_ADCValue = std::accumulate(g_ADCBuffer, g_ADCBuffer + ADC_BUFFER_LENGTH, 0) / ADC_BUFFER_LENGTH;
-		int dmaOffsetAfterAveraging = ADC_BUFFER_LENGTH - DMA1_Channel1->CNDTR;
-		g_MeasurementNumber += ADC_BUFFER_LENGTH;
-#else
-		g_ADCValue = HAL_ADC_GetValue(&hadc1);
-		g_MeasurementNumber ++;
-#endif
-	}
-#endif
 
 #if DMA
 	void DMA1_Channel1_IRQHandler()
@@ -263,6 +256,7 @@ int main(void)
 {
 	HAL_Init();
 	SystemClock_Config();
+	MX_DMA_Init();
 	ConfigureADC();
     
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -280,7 +274,7 @@ int main(void)
 	{
 		g_ADCBuffer[i]=0;
 	}
-	ConfigureDMA();
+	//ConfigureDMA();
 	HAL_ADC_Start_DMA(&hadc1, g_ADCBuffer, ADC_BUFFER_LENGTH);	
 #else
 	HAL_ADC_Start_IT(&hadc1);
