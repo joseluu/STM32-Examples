@@ -68,14 +68,18 @@ void HardFault_Handler(void)
 	    " bx r2                                                     \n"
 	    " handler2_address_const: .word prvGetRegistersFromStack    \n"
 	);
-}
+}
+
 void SystemClock_Config();
 
 ADC_HandleTypeDef hadc1;
+DMA_HandleTypeDef  hdma_adc1;
+#define DMA_WORKS
+
+static int ADC12_CLK_ENABLED = 0;
 
 void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
 {
-
 	GPIO_InitTypeDef GPIO_InitStruct;
 	if (hadc->Instance == ADC1)
 	{
@@ -83,7 +87,10 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
 
 	  /* USER CODE END ADC1_MspInit 0 */
 	    /* Peripheral clock enable */
-		__ADC12_CLK_ENABLE();
+		ADC12_CLK_ENABLED++;
+		if (ADC12_CLK_ENABLED == 1) {
+			__ADC12_CLK_ENABLE();
+		}
   
 	    /**ADC1 GPIO Configuration    
 	    PA0     ------> ADC1_IN1 
@@ -92,10 +99,28 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
 		GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
 		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+		#ifndef DMA_WORKS
+		    /* Peripheral DMA init*/
+  
+		hdma_adc1.Instance = DMA1_Channel1;
+		hdma_adc1.Init.Direction = DMA_PERIPH_TO_MEMORY;
+		hdma_adc1.Init.PeriphInc = DMA_PINC_DISABLE;
+		hdma_adc1.Init.MemInc = DMA_MINC_ENABLE;
+		hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
+		hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
+		hdma_adc1.Init.Mode = DMA_CIRCULAR;
+		hdma_adc1.Init.Priority = DMA_PRIORITY_HIGH;
+		HAL_DMA_Init(&hdma_adc1);
+
+		__HAL_LINKDMA(hadc, DMA_Handle, hdma_adc1);
+
+		#endif
+		  /* USER CODE BEGIN ADC1_MspInit 1 */
+
+		    /* USER CODE END ADC1_MspInit 1 */
 	}
 	
-	HAL_NVIC_SetPriority(ADC1_2_IRQn, 0, 0);
-	HAL_NVIC_EnableIRQ(ADC1_2_IRQn);
 
 }
 
@@ -147,25 +172,25 @@ void ConfigureADC()
 	}
 }
 
-DMA_HandleTypeDef  g_DmaHandle;
 
 void ConfigureDMA()
 {
 	__DMA1_CLK_ENABLE(); 
-	g_DmaHandle.Instance = DMA1_Channel1;
+	#ifdef DMA_WORKS
+		    /* Peripheral DMA init*/
   
-	g_DmaHandle.Init.Direction = DMA_PERIPH_TO_MEMORY;
-	g_DmaHandle.Init.PeriphInc = DMA_PINC_DISABLE;
-	g_DmaHandle.Init.MemInc = DMA_MINC_ENABLE;
-	g_DmaHandle.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-	g_DmaHandle.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-	g_DmaHandle.Init.Mode = DMA_CIRCULAR;
-	g_DmaHandle.Init.Priority = DMA_PRIORITY_HIGH;
+		hdma_adc1.Instance = DMA1_Channel1;
+		hdma_adc1.Init.Direction = DMA_PERIPH_TO_MEMORY;
+		hdma_adc1.Init.PeriphInc = DMA_PINC_DISABLE;
+		hdma_adc1.Init.MemInc = DMA_MINC_ENABLE;
+		hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
+		hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
+		hdma_adc1.Init.Mode = DMA_CIRCULAR;
+		hdma_adc1.Init.Priority = DMA_PRIORITY_HIGH;
+		HAL_DMA_Init(&hdma_adc1);
 
-	HAL_DMA_Init(&g_DmaHandle);
-    
-	__HAL_LINKDMA(&hadc1, DMA_Handle, g_DmaHandle);
-
+		__HAL_LINKDMA(&hadc1, DMA_Handle, hdma_adc1);
+	#endif
   /* DMA interrupt init */
 	HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
 	HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
@@ -218,13 +243,15 @@ volatile	int g_DmaOffsetBeforeAveragingH, g_DmaOffsetAfterAveragingH;
 		g_MeasurementNumber ++;
 #endif
 	}
-#endif
+#endif
+
 #if DMA
 	void DMA1_Channel1_IRQHandler()
 	{
-		HAL_DMA_IRQHandler(&g_DmaHandle);
+		HAL_DMA_IRQHandler(&hdma_adc1);
 	}
-#endif
+#endif
+
 	void ADC1_2_IRQHandler()
 	{
 		HAL_ADC_IRQHandler(&hadc1);
@@ -255,7 +282,8 @@ int main(void)
 	}
 	ConfigureDMA();
 	HAL_ADC_Start_DMA(&hadc1, g_ADCBuffer, ADC_BUFFER_LENGTH);	
-#else	HAL_ADC_Start_IT(&hadc1);
+#else
+	HAL_ADC_Start_IT(&hadc1);
 #endif
  
 	for (;;)
