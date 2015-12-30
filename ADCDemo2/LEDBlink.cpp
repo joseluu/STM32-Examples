@@ -1,5 +1,6 @@
 #include <stm32f3xx_hal.h>
 #include <stm32f3xx.h>
+#include "hrtim.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -360,14 +361,8 @@ volatile	int g_DmaOffsetBeforeAveragingH, g_DmaOffsetAfterAveragingH;
 }
 
 
-int main(void)
+void MX_GPIO_Init()
 {
-	HAL_Init();
-	SystemClock_Config();
-	MX_DMA_Init();
-	MX_ADC1_Init();
-	MX_ADC2_Init();
-    
 	GPIO_InitTypeDef GPIO_InitStructure;
 	__GPIOA_CLK_ENABLE();
  
@@ -377,7 +372,21 @@ int main(void)
 	GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
 	GPIO_InitStructure.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
+}
 
+int main(void)
+{
+	HAL_Init();
+	SystemClock_Config();
+	MX_GPIO_Init();
+	MX_DMA_Init();
+	MX_ADC1_Init();
+	MX_ADC2_Init();
+	MX_HRTIM1_Init();
+
+
+	HAL_HRTIM_SimpleOCStart(&hhrtim1, HRTIM_TIMERINDEX_TIMER_A, HRTIM_OUTPUT_TA1);
+	
 #if DMA
 	for (std::size_t i = 0; i < ADC_BUFFER_LENGTH; i++)
 	{
@@ -419,22 +428,28 @@ void SystemClock_Config(void)
 	RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
 	HAL_RCC_OscConfig(&RCC_OscInitStruct);
 
-	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_SYSCLK;
-	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1;
+	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-	HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0);
+	HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
 
-	PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_ADC12;
+	PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_HRTIM1 | RCC_PERIPHCLK_USART1
+	                            | RCC_PERIPHCLK_ADC12;
 	PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
-	PeriphClkInit.Adc12ClockSelection = RCC_ADC12PLLCLK_DIV128;
+	PeriphClkInit.Adc12ClockSelection = RCC_ADC12PLLCLK_DIV1;
+	PeriphClkInit.Hrtim1ClockSelection = RCC_HRTIM1CLK_PLLCLK;
 	HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit);
 
+	#if 0
+	__SYSCFG_CLK_ENABLE();
+	#else
 	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
 
 	HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
 	  /* SysTick_IRQn interrupt configuration */
 	HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+	#endif
 }

@@ -114,6 +114,7 @@
     <ClCompile Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\STM32F3xx_HAL_Driver\Src\stm32f3xx_hal_usart.c" />
     <ClCompile Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\STM32F3xx_HAL_Driver\Src\stm32f3xx_hal_wwdg.c" />
     <ClCompile Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\STM32F3xx_HAL_Driver\Src\stm32f3xx_ll_fmc.c" />
+    <ClCompile Include="hrtim.cpp" />
     <ClCompile Include="LEDBlink.cpp" />
     <ClCompile Include="system_stm32f3xx.c" />
   </ItemGroup>
@@ -203,6 +204,7 @@
     <ClInclude Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\STM32F3xx_HAL_Driver\Inc\stm32f3xx_hal_usart_ex.h" />
     <ClInclude Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\STM32F3xx_HAL_Driver\Inc\stm32f3xx_hal_wwdg.h" />
     <ClInclude Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\STM32F3xx_HAL_Driver\Inc\stm32f3xx_ll_fmc.h" />
+    <ClInclude Include="hrtim.h" />
     <ClInclude Include="stm32f3xx_hal_conf.h" />
   </ItemGroup>
   <ItemGroup>
