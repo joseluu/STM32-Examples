@@ -63,6 +63,7 @@
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="adc.cpp" />
     <ClCompile Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\StartupFiles\startup_stm32f334x8.c" />
     <ClCompile Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\STM32F3xx_HAL_Driver\Src\stm32f3xx_hal.c" />
     <ClCompile Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\STM32F3xx_HAL_Driver\Src\stm32f3xx_hal_adc.c" />
@@ -119,6 +120,7 @@
     <ClCompile Include="system_stm32f3xx.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="adc.h" />
     <ClInclude Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\CMSIS_HAL\Device\ST\STM32F3xx\Include\stm32f301x8.h" />
     <ClInclude Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\CMSIS_HAL\Device\ST\STM32F3xx\Include\stm32f302x8.h" />
     <ClInclude Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\CMSIS_HAL\Device\ST\STM32F3xx\Include\stm32f302xc.h" />

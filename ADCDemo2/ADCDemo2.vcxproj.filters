@@ -193,6 +193,9 @@
     <ClCompile Include="hrtim.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="adc.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stm32f3xx_hal_conf.h">
@@ -454,6 +457,9 @@
       <Filter>Header files\Device-specific files\HAL</Filter>
     </ClInclude>
     <ClInclude Include="hrtim.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="adc.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>
