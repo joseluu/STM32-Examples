@@ -61,7 +61,8 @@ void delay(unsigned int ms)
 }
 
 void delayUS_DWT(uint16_t uSec)
-{	volatile uint32_t cycles = (SystemCoreClock / 1000000L)*uSec;
+{
+	volatile uint32_t cycles = (SystemCoreClock / 1000000L)*uSec;
 	volatile uint32_t start = DWT->CYCCNT;
 	do {
 	} while (DWT->CYCCNT - start < cycles);
@@ -108,7 +109,6 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-	  //setupLCD();
 	  testLCD();
   }
   /* USER CODE END 3 */

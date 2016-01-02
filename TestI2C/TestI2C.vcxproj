@@ -158,8 +158,8 @@
     <ClInclude Include="Inc\Printable.h" />
     <ClInclude Include="Inc\stm32f3xx_hal_conf.h" />
     <ClInclude Include="Inc\stm32f3xx_it.h" />
+    <ClInclude Include="Inc\TestLCD.h" />
     <ClInclude Include="Inc\WString.h" />
-    <ClInclude Include="TestLCD.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\Users\jluu\AppData\Local\VisualGDB\EmbeddedBSPs\arm-eabi\com.sysprogs.arm.stm32\STM32F3xxxx\CMSIS_HAL\Device\ST\STM32F3xx\Source\Templates\system_stm32f3xx.c" />
@@ -223,8 +223,8 @@
     <ClCompile Include="Src\Print.cpp" />
     <ClCompile Include="Src\stm32f3xx_hal_msp.c" />
     <ClCompile Include="Src\stm32f3xx_it.c" />
+    <ClCompile Include="Src\TestLCD.cpp" />
     <ClCompile Include="Src\WString.cpp" />
-    <ClCompile Include="TestLCD.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="debug.mak" />

@@ -52,10 +52,11 @@ I2CIO::I2CIO ( )
 // begin
 int I2CIO::begin (  uint8_t i2cAddr )
 {
-   _i2cAddr = i2cAddr;
+	// on STM32, I2C addresses have to be shifted 1 bit left to allow for hardware insertion of the r/w bit as the MSb
+	_i2cAddr = (i2cAddr << 1);
    
 	int status;
-	//status = HAL_I2C_Master_Receive(&hi2c1, (uint16_t)_i2cAddr, &_shadow, 1, 10);
+	//status = HAL_I2C_Master_Receive(&hi2c1, (uint16_t)_i2cAddr<<1, &_shadow, 1, 10);
 	status = HAL_I2C_IsDeviceReady(&hi2c1, (uint16_t)_i2cAddr,  1, 10); 
 	
 	if (status != HAL_OK) {
@@ -134,7 +135,6 @@ int I2CIO::write ( uint8_t value )
    return ( (status == 0) ); // HAL_OK is 0 as well
 }
 
-#if 0
 //
 // digitalRead
 uint8_t I2CIO::digitalRead ( uint8_t pin )
@@ -179,7 +179,7 @@ int I2CIO::digitalWrite ( uint8_t pin, uint8_t level )
    }
    return ( status );
 }
-#endif
+
 //
 // PRIVATE METHODS
 // ---------------------------------------------------------------------------
