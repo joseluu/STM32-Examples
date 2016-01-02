@@ -2,7 +2,7 @@
 #include <LiquidCrystal_I2C.h>  // F Malpartida's NewLiquidCrystal library
 
 /*-----( Declare Constants )-----*/
-#define I2C_ADDR    0xA7  // Define I2C Address for the PCF8574A 
+#define I2C_ADDR    0x47  // Define I2C Address for the PCF8574A 
 //---(Following are the PCF8574 pin assignments to LCD connections )----
 // This are different than earlier/different I2C LCD displays
 #if 0
